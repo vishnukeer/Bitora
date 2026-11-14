@@ -72,6 +72,15 @@ h1, h2, p { overflow-wrap: anywhere; }
 .section-heading h2 { margin: 0; font: 700 17px 'Manrope', sans-serif; letter-spacing: -.35px; }
 .section-caption { margin: 6px 0 0; color: #96948d; font-size: 11px; }
 .currency-label { padding: 8px 11px; border: 1px solid #eeece7; border-radius: 9px; color: #66645d; font-size: 10px; font-weight: 700; }
+.market-tools { display: flex; align-items: center; gap: 10px; }
+.search-box { display: flex; width: min(265px, 27vw); min-width: 185px; height: 37px; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid #eeece7; border-radius: 9px; background: #fff; color: #99978f; transition: border-color .18s, box-shadow .18s; }
+.search-box:focus-within { border-color: #efbd7b; box-shadow: 0 0 0 3px #fff3e0; }
+.search-icon { flex: 0 0 auto; color: #a9a69f; font-size: 20px; line-height: 1; transform: rotate(-15deg); }
+.search-input { width: 100%; min-width: 0; padding: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: 500 10px 'DM Sans', sans-serif; }
+.search-input::placeholder { color: #aaa79f; }
+.search-input::-webkit-search-cancel-button { display: none; }
+.clear-search { display: grid; width: 22px; height: 22px; flex: 0 0 auto; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #f5f3ef; color: #716f68; font-size: 17px; line-height: 1; cursor: pointer; }
+.clear-search[hidden] { display: none; }
 .currency-label span { margin-left: 6px; color: #aaa79f; }
 .table-wrap { width: 100%; overflow-x: auto; }
 .market-table { display: grid; grid-template-columns: minmax(210px, 1.7fr) minmax(95px, .8fr) minmax(100px, .9fr) minmax(110px, 1fr); align-items: center; column-gap: 12px; min-width: 620px; }
@@ -121,6 +130,9 @@ h1, h2, p { overflow-wrap: anywhere; }
   .main-content { min-height: auto; margin: 0; padding: 30px 16px; }
   .page-header { gap: 18px; margin-bottom: 26px; }
   .page-header h1 { font-size: 24px; }
+  .section-heading { align-items: flex-start; flex-direction: column; }
+  .market-tools { width: 100%; }
+  .search-box { width: 100%; min-width: 0; flex: 1; }
   .market-section { padding: 20px 15px 14px; border-radius: 16px; }
   .market-table { min-width: 590px; grid-template-columns: minmax(185px, 1.5fr) minmax(88px, .8fr) minmax(94px, .9fr) minmax(102px, 1fr); }
   .live-indicator { font-size: 10px; }
@@ -128,3 +140,4 @@ h1, h2, p { overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+

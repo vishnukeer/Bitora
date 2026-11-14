@@ -30,7 +30,7 @@
           </a>
           <a class="nav-link nav-link-between" href="#watchlist" aria-disabled="true" title="Coming in a later feature">
             <span class="nav-label"><span class="nav-icon" aria-hidden="true">☆</span><span>Watchlist</span></span>
-            <span class="nav-count">0</span>
+            <span class="nav-count">0</span>aa                                                                      
           </a>
         </nav>
       </div>
@@ -79,9 +79,16 @@
         <div class="section-heading">
           <div>
             <h2 id="market-title">Top cryptocurrencies</h2>
-            <p class="section-caption">The 20 largest coins by market capitalization</p>
+            <p class="section-caption" id="section-caption">The 20 largest coins by market capitalization</p>
           </div>
-          <span class="currency-label">USD <span aria-hidden="true">⌄</span></span>
+          <div class="market-tools">
+            <label class="search-box" for="coin-search">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input class="search-input" id="coin-search" type="search" placeholder="Search coin name or symbol" autocomplete="off" spellcheck="false" aria-label="Search coins by name or symbol">
+              <button class="clear-search" id="clear-search" type="button" aria-label="Clear search" hidden>×</button>
+            </label>
+            <span class="currency-label">USD <span aria-hidden="true">⌄</span></span>
+          </div>
         </div>
 
         <div class="table-wrap">
@@ -99,3 +106,9 @@
   </div>
 </body>
 </html>
+
+
+
+
+
+
