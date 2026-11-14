@@ -1,126 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> — Crypto Market Tracker</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css" integrity="sha512-x9WwyMYBnlXMNQ6kQ/Lyzu1NqIhLQKL5Oq6xByfXuRj7s9CskyCbLv/1IjqzJmXwFXWr0ov6jBV7Qbc0hh9nHg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fffaf3">
+  <title>Bitora — Crypto Market Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
-    
-<aside class="w-72 min-h-screen bg-white border-r border-gray-200 flex flex-col px-5 py-7">
-
-  <!-- BRAND -->
-  <div class="flex items-center gap-3 px-2 mb-12">
-    <div class="w-11 h-11 rounded-xl bg-[#FFF3E0] flex items-center justify-center">
-      <span class="text-3xl font-bold text-[#F7931A]"><i class="fa-brands fa-bitcoin"></i></span>
-    </div>
-
-    <h1 class="text-2xl font-bold tracking-tight text-[#242424]">
-      Bitora
-    </h1>
-  </div>
-
-  <!-- MENU -->
-  <div class="mb-9">
-    <p class="text-xs font-bold tracking-widest text-gray-400 px-3 mb-4">
-      PANEL
-    </p>
-
-    <nav class="space-y-2">
-
-      <a href="#" class="flex items-center gap-4 px-4 py-3 rounded-xl bg-[#FFF3E0] text-[#D97706] font-semibold">
-        <span class="text-xl"><i class="fa-solid fa-arrow-up-right-dots"></i></span>
-        Overview
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="Bitora home">
+        <span class="brand-mark" aria-hidden="true">₿</span>
+        <span class="brand-name">Bitora</span>
       </a>
 
-      <a href="#" class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-[#F7931A] transition">
-        <span class="text-xl"><i class="fa-brands fa-mailchimp"></i></span>
-        Markets
-      </a>
-
-      <a href="#" class="flex items-center justify-between px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-[#F7931A] transition">
-        <span class="flex items-center gap-4">
-          <span class="text-xl"><i class="fa-regular fa-star"></i></span>
-          Watchlist
-        </span>
-
-        <span class="bg-[#FFF0D9] text-[#D97706] text-xs px-2.5 py-1 rounded-full">
-          0
-        </span>
-      </a>
-
-    </nav>
-  </div>
-
-  <!-- EXPLORE -->
-  <div>
-    <p class="text-xs font-bold tracking-widest text-gray-400 px-3 mb-4">
-      EXPLORE
-    </p>
-
-    <nav class="space-y-2">
-
-      <a href="#" class="flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-[#F7931A] transition">
-        <span class="text-xl"><i class="fa-solid fa-arrows-to-dot"></i></span>
-        All assets
-      </a>
-
-    </nav>
-  </div>
-
-  <!-- SPACER -->
-  <div class="flex-1 min-h-12"></div>
-
-  <!-- PROMO CARD -->
-  <div class="bg-[#FFF7EB] border border-[#FCE3C0] rounded-2xl p-5 mb-7">
-
-    <div class="w-9 h-9 rounded-lg bg-white flex items-center justify-center text-[#F7931A] text-xl mb-4">
-      <i class="fa-brands fa-bitcoin"></i>
-    </div>
-
-    <h3 class="font-semibold text-[#242424] mb-2">
-      New to crypto?
-    </h3>
-
-    <p class="text-sm text-gray-500 leading-relaxed mb-5">
-      Explore the market at your own pace.
-    </p>
-
-    <a href="https://bitcoin.org/en/" target="_blank"
-       class="text-sm font-semibold text-[#D97706] hover:text-[#F7931A]">
-      Learn the basics <i class="fa-solid fa-location-arrow"></i>
-    </a>
-
-  </div>
-
-  <!-- PROFILE -->
-  <div class="flex items-center justify-between px-1">
-
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-full bg-[#FFE5C2] flex items-center justify-center text-[#B45309] font-semibold">
-        V
+      <div class="nav-section">
+        <p class="nav-heading">PANEL</p>
+        <nav class="nav-list">
+          <a class="nav-link nav-link-active" href="#home" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">◫</span><span>Overview</span>
+          </a>
+          <a class="nav-link" href="#markets" aria-disabled="true" title="Coming in a later feature">
+            <span class="nav-icon" aria-hidden="true">⌁</span><span>Markets</span>
+          </a>
+          <a class="nav-link nav-link-between" href="#watchlist" aria-disabled="true" title="Coming in a later feature">
+            <span class="nav-label"><span class="nav-icon" aria-hidden="true">☆</span><span>Watchlist</span></span>
+            <span class="nav-count">0</span>
+          </a>
+        </nav>
       </div>
 
-      <div>
-        <h4 class="text-sm font-semibold text-[#242424]">
-          Vishnu Keer
-        </h4>
-
-        <p class="text-xs text-gray-500">
-          Personal account
-        </p>
+      <div class="nav-section explore-section">
+        <p class="nav-heading">EXPLORE</p>
+        <nav class="nav-list">
+          <a class="nav-link" href="#assets" aria-disabled="true" title="Coming in a later feature">
+            <span class="nav-icon" aria-hidden="true">◎</span><span>All assets</span>
+          </a>
+        </nav>
       </div>
-    </div>
 
-    <button class="text-gray-400 hover:text-[#F7931A] text-xl">
-        ...
-    </button>
+      <div class="sidebar-spacer"></div>
 
+      <section class="promo-card" aria-label="Crypto learning resource">
+        <span class="promo-icon" aria-hidden="true">₿</span>
+        <h2>New to crypto?</h2>
+        <p>Explore the market at your own pace.</p>
+        <a href="https://bitcoin.org/en/" target="_blank" rel="noreferrer">Learn the basics <span aria-hidden="true">↗</span></a>
+      </section>
+
+      <div class="profile-row">
+        <span class="profile-avatar" aria-hidden="true">V</span>
+        <span class="profile-copy"><strong>Vishnu Keer</strong><small>Personal account</small></span>
+        <span class="profile-menu" aria-hidden="true">···</span>
+      </div>
+    </aside>
+
+    <main class="main-content" id="home">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">MARKET OVERVIEW</p>
+          <h1>Good to see you, Vishnu <span aria-hidden="true">✦</span></h1>
+          <p class="page-subtitle">A clear view of the crypto market, all in one place.</p>
+        </div>
+        <div class="header-actions">
+          <span class="live-indicator"><span class="live-dot"></span> Live market data</span>
+          <button class="refresh-button" id="refresh-button" type="button">
+            <span class="refresh-icon" aria-hidden="true">↻</span><span>Refresh</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="market-section" aria-labelledby="market-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="market-title">Top cryptocurrencies</h2>
+            <p class="section-caption">The 20 largest coins by market capitalization</p>
+          </div>
+          <span class="currency-label">USD <span aria-hidden="true">⌄</span></span>
+        </div>
+
+        <div class="table-wrap">
+          <div class="market-table market-table-head" aria-hidden="true">
+            <span class="col-asset">Asset</span>
+            <span class="col-price align-right">Price</span>
+            <span class="col-change align-right">24h change</span>
+            <span class="col-cap align-right">Market cap</span>
+          </div>
+          <div class="market-results" id="market-results" aria-live="polite" aria-busy="true"></div>
+        </div>
+        <p class="last-updated" id="last-updated">Connecting to CoinGecko…</p>
+      </section>
+    </main>
   </div>
-
-</aside>
-
 </body>
 </html>
