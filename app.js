@@ -19,11 +19,21 @@ const SORT_LABELS = {
 };
 let marketCoins = [];
 let searchDebounceTimer;
+
+// FEATURE 4: Watchlist persistence, view, and event delegation start here.
+const WATCHLIST_STORAGE_KEY = 'bitora-watchlist';
+const watchlistCount = document.querySelector('#watchlist-count');
+const marketTitle = document.querySelector('#market-title');
+const marketTools = document.querySelector('.market-tools');
+const sidebar = document.querySelector('.sidebar');
+let currentView = 'markets';
+let watchlistCoins = loadWatchlist();
 const numberFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
 const compactMoneyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 2
 });
 
+// Formatting helpers keep displayed market values consistent.
 function formatPrice(value) {
     if (value == null || !Number.isFinite(Number(value))) return '—';
     const digits = Number(value) >= 1 ? 2 : 6;
@@ -40,6 +50,7 @@ function formatChange(value) {
     return Number.isFinite(Number(value)) ? `${Number(value) > 0 ? '+' : ''}${Number(value).toFixed(2)}%` : '—';
 }
 
+// Loading placeholders and dynamically rendered coin rows.
 function createSkeletonRows() {
     const fragment = document.createDocumentFragment();
     for (let index = 0; index < DISPLAY_LIMIT; index += 1) {
@@ -80,7 +91,19 @@ function renderCoins(coins, limit = DISPLAY_LIMIT) {
         symbol.className = 'asset-symbol';
         symbol.textContent = coin.symbol ? coin.symbol.toUpperCase() : '';
         nameWrap.append(name, symbol);
-        asset.append(rank, image, nameWrap);
+        const isSaved = watchlistCoins.some((savedCoin) => savedCoin.id === coin.id);
+        const watchlistButton = document.createElement('button');
+        watchlistButton.className = `watchlist-toggle${isSaved ? ' is-saved' : ''}`;
+        watchlistButton.type = 'button';
+        watchlistButton.dataset.watchlistToggle = '';
+        watchlistButton.dataset.coinId = coin.id;
+        watchlistButton.setAttribute('aria-pressed', String(isSaved));
+        watchlistButton.setAttribute('aria-label', `${isSaved ? 'Remove' : 'Add'} ${coin.name} ${isSaved ? 'from' : 'to'} watchlist`);
+        const starIcon = document.createElement('i');
+        starIcon.className = `${isSaved ? 'fa-solid' : 'fa-regular'} fa-star`;
+        starIcon.setAttribute('aria-hidden', 'true');
+        watchlistButton.append(starIcon);
+        asset.append(rank, image, nameWrap, watchlistButton);
 
         const price = document.createElement('span');
         price.className = 'col-price align-right numeric-cell';
@@ -111,6 +134,85 @@ function showNoSearchResults(query) {
     resultsContainer.setAttribute('aria-busy', 'false');
 }
 
+// FEATURE 4: Read, save, and render the user's LocalStorage watchlist.
+function loadWatchlist() {
+    try {
+        const savedCoins = JSON.parse(localStorage.getItem(WATCHLIST_STORAGE_KEY) || '[]');
+        return Array.isArray(savedCoins)
+            ? savedCoins.filter((coin) => coin && coin.id && coin.name)
+            : [];
+    } catch (error) {
+        console.error('Unable to read the Bitora watchlist:', error);
+        return [];
+    }
+}
+
+function saveWatchlist() {
+    try {
+        localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(watchlistCoins));
+        updatedLabel.textContent = 'Watchlist saved on this device';
+    } catch (error) {
+        console.error('Unable to save the Bitora watchlist:', error);
+        updatedLabel.textContent = 'Could not save the watchlist in this browser';
+    }
+    updateWatchlistCount();
+}
+
+function updateWatchlistCount() {
+    watchlistCount.textContent = String(watchlistCoins.length);
+}
+
+function syncSavedCoinData(coins) {
+    const latestCoins = new Map(coins.map((coin) => [coin.id, coin]));
+    let changed = false;
+    watchlistCoins = watchlistCoins.map((savedCoin) => {
+        const latestCoin = latestCoins.get(savedCoin.id);
+        if (!latestCoin) return savedCoin;
+        changed = true;
+        return latestCoin;
+    });
+    if (changed) {
+        try {
+            localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(watchlistCoins));
+        } catch (error) {
+            console.error('Unable to update saved market values:', error);
+        }
+    }
+}
+
+function showEmptyWatchlist() {
+    const panel = document.createElement('div');
+    panel.className = 'state-panel';
+    const title = document.createElement('h3');
+    title.textContent = 'Your watchlist is empty';
+    const message = document.createElement('p');
+    message.textContent = 'Select the star beside a coin to save it here for later.';
+    panel.append(title, message);
+    resultsContainer.replaceChildren(panel);
+    resultsContainer.setAttribute('aria-busy', 'false');
+}
+
+function renderWatchlist() {
+    marketTools.hidden = true;
+    marketTitle.textContent = 'Your watchlist';
+    sectionCaption.textContent = `${watchlistCoins.length} ${watchlistCoins.length === 1 ? 'coin' : 'coins'} saved on this device`;
+    if (watchlistCoins.length === 0) {
+        showEmptyWatchlist();
+        return;
+    }
+    renderCoins(watchlistCoins, watchlistCoins.length);
+}
+
+function renderCurrentView() {
+    const isWatchlistView = currentView === 'watchlist';
+    marketTitle.textContent = isWatchlistView ? 'Your watchlist' : 'Top cryptocurrencies';
+    marketTools.hidden = isWatchlistView;
+    if (isWatchlistView) {
+        renderWatchlist();
+        return;
+    }
+    applyCoinSearch();
+}
 // FEATURE 3: Sort current search results by price, 24h change, or market cap.
 function applyCoinSearch() {
     if (marketCoins.length === 0) return;
@@ -184,6 +286,7 @@ function showErrorState() {
     resultsContainer.setAttribute('aria-busy', 'false');
 }
 
+// Initial data load and user-triggered refresh, with error handling.
 async function loadMarketData() {
     refreshButton.disabled = true;
     refreshButton.classList.add('is-refreshing');
@@ -196,16 +299,20 @@ async function loadMarketData() {
         if (!response.ok) throw new Error(`Market request failed with status ${response.status}`);
         const coins = await response.json();
         if (!Array.isArray(coins) || coins.length === 0) {
-            showEmptyState();
+            if (currentView === 'watchlist') renderWatchlist();
+            else showEmptyState();
             updatedLabel.textContent = 'No market data returned';
             return;
         }
         marketCoins = coins;
-        applyCoinSearch();
+        syncSavedCoinData(coins);
+        updateWatchlistCount();
+        renderCurrentView();
         updatedLabel.textContent = `Updated ${new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(new Date())} · Showing the top ${Math.min(coins.length, DISPLAY_LIMIT)} coins`;
     } catch (error) {
         console.error('Unable to load CoinGecko market data:', error);
-        showErrorState();
+        if (currentView === 'watchlist') renderWatchlist();
+        else showErrorState();
         updatedLabel.textContent = 'Market data unavailable';
     } finally {
         refreshButton.disabled = false;
@@ -213,7 +320,39 @@ async function loadMarketData() {
     }
 }
 
-// FEATURE 2: Debounce typing so the local list updates after the user pauses.
+// Page controls and delegated coin-row actions.
+// FEATURE 4: Event delegation handles star clicks for every dynamically rendered coin row.
+resultsContainer.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-watchlist-toggle]');
+    if (!button || !resultsContainer.contains(button)) return;
+
+    const coinId = button.dataset.coinId;
+    const coin = marketCoins.find((item) => item.id === coinId)
+        || watchlistCoins.find((item) => item.id === coinId);
+    if (!coin) return;
+
+    const savedIndex = watchlistCoins.findIndex((savedCoin) => savedCoin.id === coinId);
+    if (savedIndex >= 0) watchlistCoins.splice(savedIndex, 1);
+    else watchlistCoins.push(coin);
+
+    saveWatchlist();
+    renderCurrentView();
+});
+
+sidebar.addEventListener('click', (event) => {
+    const link = event.target.closest('[data-view]');
+    if (!link || !sidebar.contains(link)) return;
+    event.preventDefault();
+    currentView = link.dataset.view;
+
+    sidebar.querySelectorAll('[data-view]').forEach((viewLink) => {
+        const isActive = viewLink.dataset.view === currentView;
+        viewLink.classList.toggle('nav-link-active', isActive);
+        if (isActive) viewLink.setAttribute('aria-current', 'page');
+        else viewLink.removeAttribute('aria-current');
+    });
+    renderCurrentView();
+});
 searchInput.addEventListener('input', handleSearchInput);
 // FEATURE 3: Re-render the current list when sort controls change.
 sortSelect.addEventListener('change', applyCoinSearch);
@@ -234,9 +373,7 @@ clearSearchButton.addEventListener('click', () => {
     searchInput.focus();
 });
 
+updateWatchlistCount();
 refreshButton.addEventListener('click', loadMarketData);
 loadMarketData();
-
-
-
 
