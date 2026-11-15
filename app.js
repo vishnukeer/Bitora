@@ -3,6 +3,9 @@ const MARKET_API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_curren
 const DISPLAY_LIMIT = 20;
 const resultsContainer = document.querySelector('#market-results');
 const refreshButton = document.querySelector('#refresh-button');
+const themeToggle = document.querySelector('#theme-toggle');
+const themeToggleIcon = document.querySelector('#theme-toggle-icon').querySelector('i');
+const themeToggleLabel = document.querySelector('#theme-toggle-label');
 const updatedLabel = document.querySelector('#last-updated');
 const searchInput = document.querySelector('#coin-search');
 const clearSearchButton = document.querySelector('#clear-search');
@@ -25,8 +28,12 @@ const WATCHLIST_STORAGE_KEY = 'bitora-watchlist';
 const watchlistCount = document.querySelector('#watchlist-count');
 const marketTitle = document.querySelector('#market-title');
 const marketTools = document.querySelector('.market-tools');
+const tableWrap = document.querySelector('#market-table-wrap');
+const coinDetailView = document.querySelector('#coin-detail-view');
 const sidebar = document.querySelector('.sidebar');
 let currentView = 'markets';
+let detailReturnView = 'markets';
+let selectedCoinId = null;
 let watchlistCoins = loadWatchlist();
 const numberFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
 const compactMoneyFormatter = new Intl.NumberFormat('en-US', {
@@ -34,6 +41,27 @@ const compactMoneyFormatter = new Intl.NumberFormat('en-US', {
 });
 
 // Formatting helpers keep displayed market values consistent.
+// OPTIONAL STRETCH: Apply and persist the page color theme.
+const THEME_STORAGE_KEY = 'bitora-theme';
+
+function getSavedTheme() {
+    try {
+        return localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light';
+    } catch (error) {
+        return 'light';
+    }
+}
+
+function applyTheme(theme) {
+    const isDark = theme === 'dark';
+    document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+    themeToggle.setAttribute('aria-pressed', String(isDark));
+    themeToggle.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} mode`);
+    themeToggleIcon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    themeToggleLabel.textContent = isDark ? 'Light mode' : 'Dark mode';
+    document.querySelector('meta[name="theme-color"]').content = isDark ? '#111317' : '#fffaf3';
+}
 function formatPrice(value) {
     if (value == null || !Number.isFinite(Number(value))) return '—';
     const digits = Number(value) >= 1 ? 2 : 6;
@@ -82,14 +110,18 @@ function renderCoins(coins, limit = DISPLAY_LIMIT) {
         image.alt = '';
         image.loading = 'lazy';
         image.addEventListener('error', () => { image.hidden = true; }, { once: true });
-        const nameWrap = document.createElement('span');
-        nameWrap.className = 'asset-name-wrap';
+        const nameWrap = document.createElement('button');
+        nameWrap.className = 'asset-name-wrap asset-detail-button';
+        nameWrap.type = 'button';
         const name = document.createElement('strong');
         name.className = 'asset-name';
         name.textContent = coin.name || 'Unknown coin';
         const symbol = document.createElement('span');
         symbol.className = 'asset-symbol';
         symbol.textContent = coin.symbol ? coin.symbol.toUpperCase() : '';
+        nameWrap.dataset.coinDetail = '';
+        nameWrap.dataset.coinId = coin.id;
+        nameWrap.setAttribute('aria-label', `View ${coin.name} details`);
         nameWrap.append(name, symbol);
         const isSaved = watchlistCoins.some((savedCoin) => savedCoin.id === coin.id);
         const watchlistButton = document.createElement('button');
@@ -155,7 +187,17 @@ function saveWatchlist() {
         console.error('Unable to save the Bitora watchlist:', error);
         updatedLabel.textContent = 'Could not save the watchlist in this browser';
     }
-    updateWatchlistCount();
+    applyTheme(getSavedTheme());
+themeToggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+    try {
+        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    } catch (error) {
+        console.error('Unable to save the Bitora theme preference:', error);
+    }
+});
+updateWatchlistCount();
 }
 
 function updateWatchlistCount() {
@@ -203,14 +245,123 @@ function renderWatchlist() {
     renderCoins(watchlistCoins, watchlistCoins.length);
 }
 
+// FEATURE 5: Local descriptions and the expanded coin detail card start here.
+const COIN_DESCRIPTIONS = {
+    bitcoin: 'Bitcoin is a decentralized digital currency that can be transferred peer to peer without a central authority.',
+    ethereum: 'Ethereum is a programmable blockchain platform for decentralized applications and smart contracts.',
+    tether: 'Tether is a stablecoin designed to track the value of the U.S. dollar.',
+    'binancecoin': 'BNB is the utility token associated with the BNB Chain ecosystem.',
+    ripple: 'XRP is a digital asset used by the XRP Ledger for value transfer and settlement.',
+    solana: 'Solana is a blockchain platform designed for fast transactions and decentralized applications.',
+    'usd-coin': 'USD Coin is a stablecoin designed to track the value of the U.S. dollar.',
+    dogecoin: 'Dogecoin is a peer-to-peer cryptocurrency that began as a lighthearted digital currency.',
+    tron: 'TRON is a blockchain network that supports decentralized applications and digital assets.',
+    'the-open-network': 'Toncoin is the native cryptocurrency of The Open Network blockchain ecosystem.'
+};
+
+function formatSupply(value, symbol) {
+    if (value == null || !Number.isFinite(Number(value))) return '—';
+    return `${numberFormatter.format(Number(value))} ${symbol ? symbol.toUpperCase() : ''}`.trim();
+}
+
+function createDetailStat(label, value, valueClass = '') {
+    const item = document.createElement('div');
+    item.className = 'detail-stat';
+    const labelElement = document.createElement('span');
+    labelElement.className = 'detail-stat-label';
+    labelElement.textContent = label;
+    const valueElement = document.createElement('strong');
+    valueElement.className = `detail-stat-value ${valueClass}`.trim();
+    valueElement.textContent = value;
+    item.append(labelElement, valueElement);
+    return item;
+}
+
+function renderCoinDetail(coin) {
+    marketTitle.textContent = `${coin.name} details`;
+    coinDetailView.replaceChildren();
+
+    const backButton = document.createElement('button');
+    backButton.className = 'detail-back-button';
+    backButton.type = 'button';
+    backButton.textContent = '← Back to market';
+    backButton.addEventListener('click', () => {
+        currentView = detailReturnView;
+        renderCurrentView();
+    });
+
+    const hero = document.createElement('div');
+    hero.className = 'detail-hero';
+    const image = document.createElement('img');
+    image.className = 'detail-coin-image';
+    image.src = coin.image || '';
+    image.alt = '';
+    image.addEventListener('error', () => { image.hidden = true; }, { once: true });
+    const identity = document.createElement('div');
+    identity.className = 'detail-identity';
+    const name = document.createElement('h3');
+    name.textContent = coin.name || 'Unknown coin';
+    const symbol = document.createElement('p');
+    symbol.textContent = coin.symbol ? coin.symbol.toUpperCase() : '';
+    identity.append(name, symbol);
+    const rank = document.createElement('span');
+    rank.className = 'detail-rank';
+    rank.textContent = Number.isFinite(Number(coin.market_cap_rank))
+        ? `Market rank #${coin.market_cap_rank}`
+        : 'Market rank unavailable';
+    hero.append(image, identity, rank);
+
+    const about = document.createElement('div');
+    about.className = 'detail-about';
+    const aboutTitle = document.createElement('h4');
+    aboutTitle.textContent = `About ${coin.name || 'this asset'}`;
+    const description = document.createElement('p');
+    description.textContent = COIN_DESCRIPTIONS[coin.id]
+        || 'A description is not available in the selected market data feed.';
+    about.append(aboutTitle, description);
+
+    const statsTitle = document.createElement('h4');
+    statsTitle.className = 'detail-stats-title';
+    statsTitle.textContent = 'Market statistics';
+    const stats = document.createElement('div');
+    stats.className = 'detail-stats';
+    const changeValue = Number(coin.price_change_percentage_24h);
+    const changeClass = Number.isFinite(changeValue) && changeValue < 0 ? 'change-negative' : 'change-positive';
+    const statValues = [
+        ['Price', formatPrice(coin.current_price), ''],
+        ['24h change', formatChange(coin.price_change_percentage_24h), changeClass],
+        ['Market cap', formatMarketCap(coin.market_cap), ''],
+        ['24h volume', formatMarketCap(coin.total_volume), ''],
+        ['Circulating supply', formatSupply(coin.circulating_supply, coin.symbol), ''],
+        ['24h high / low', `${formatPrice(coin.high_24h)} / ${formatPrice(coin.low_24h)}`, '']
+    ];
+    statValues.forEach(([label, value, valueClass]) => {
+        stats.append(createDetailStat(label, value, valueClass));
+    });
+
+    coinDetailView.append(backButton, hero, about, statsTitle, stats);
+}
 function renderCurrentView() {
     const isWatchlistView = currentView === 'watchlist';
-    marketTitle.textContent = isWatchlistView ? 'Your watchlist' : 'Top cryptocurrencies';
-    marketTools.hidden = isWatchlistView;
+    const isDetailView = currentView === 'detail';
+    marketTools.hidden = isWatchlistView || isDetailView;
+    sectionCaption.hidden = isDetailView;
+    tableWrap.hidden = isDetailView;
+    coinDetailView.hidden = !isDetailView;
+
+    if (isDetailView) {
+        const coin = marketCoins.find((item) => item.id === selectedCoinId)
+            || watchlistCoins.find((item) => item.id === selectedCoinId);
+        if (coin) renderCoinDetail(coin);
+        return;
+    }
+
     if (isWatchlistView) {
         renderWatchlist();
         return;
     }
+
+    marketTitle.textContent = 'Top cryptocurrencies';
     applyCoinSearch();
 }
 // FEATURE 3: Sort current search results by price, 24h change, or market cap.
@@ -306,7 +457,17 @@ async function loadMarketData() {
         }
         marketCoins = coins;
         syncSavedCoinData(coins);
-        updateWatchlistCount();
+        applyTheme(getSavedTheme());
+themeToggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+    try {
+        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    } catch (error) {
+        console.error('Unable to save the Bitora theme preference:', error);
+    }
+});
+updateWatchlistCount();
         renderCurrentView();
         updatedLabel.textContent = `Updated ${new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(new Date())} · Showing the top ${Math.min(coins.length, DISPLAY_LIMIT)} coins`;
     } catch (error) {
@@ -321,24 +482,32 @@ async function loadMarketData() {
 }
 
 // Page controls and delegated coin-row actions.
-// FEATURE 4: Event delegation handles star clicks for every dynamically rendered coin row.
+// FEATURE 4: Event delegation handles stars on dynamically rendered coin rows.
 resultsContainer.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-watchlist-toggle]');
-    if (!button || !resultsContainer.contains(button)) return;
+    const watchlistButton = event.target.closest('[data-watchlist-toggle]');
+    if (watchlistButton && resultsContainer.contains(watchlistButton)) {
+        const coinId = watchlistButton.dataset.coinId;
+        const coin = marketCoins.find((item) => item.id === coinId)
+            || watchlistCoins.find((item) => item.id === coinId);
+        if (!coin) return;
 
-    const coinId = button.dataset.coinId;
-    const coin = marketCoins.find((item) => item.id === coinId)
-        || watchlistCoins.find((item) => item.id === coinId);
-    if (!coin) return;
+        const savedIndex = watchlistCoins.findIndex((savedCoin) => savedCoin.id === coinId);
+        if (savedIndex >= 0) watchlistCoins.splice(savedIndex, 1);
+        else watchlistCoins.push(coin);
 
-    const savedIndex = watchlistCoins.findIndex((savedCoin) => savedCoin.id === coinId);
-    if (savedIndex >= 0) watchlistCoins.splice(savedIndex, 1);
-    else watchlistCoins.push(coin);
+        saveWatchlist();
+        renderCurrentView();
+        return;
+    }
 
-    saveWatchlist();
+    // FEATURE 5: Open a coin detail card from its name button.
+    const detailButton = event.target.closest('[data-coin-detail]');
+    if (!detailButton || !resultsContainer.contains(detailButton)) return;
+    selectedCoinId = detailButton.dataset.coinId;
+    detailReturnView = currentView;
+    currentView = 'detail';
     renderCurrentView();
 });
-
 sidebar.addEventListener('click', (event) => {
     const link = event.target.closest('[data-view]');
     if (!link || !sidebar.contains(link)) return;
@@ -373,7 +542,20 @@ clearSearchButton.addEventListener('click', () => {
     searchInput.focus();
 });
 
+applyTheme(getSavedTheme());
+themeToggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+    try {
+        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    } catch (error) {
+        console.error('Unable to save the Bitora theme preference:', error);
+    }
+});
 updateWatchlistCount();
 refreshButton.addEventListener('click', loadMarketData);
 loadMarketData();
+
+
+
 

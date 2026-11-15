@@ -81,6 +81,11 @@
                 </div>
                 <div class="header-actions">
                     <span class="live-indicator"><span class="live-dot"></span> Live market data</span>
+                    <!-- OPTIONAL STRETCH: Persistent dark mode control. -->
+                    <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">
+                        <span class="theme-toggle-icon" id="theme-toggle-icon" aria-hidden="true"><i class="fa-solid fa-moon"></i></span>
+                        <span class="theme-toggle-label" id="theme-toggle-label">Dark mode</span>
+                    </button>
                     <button class="refresh-button" id="refresh-button" type="button">
                         <span class="refresh-icon" aria-hidden="true"><i class="fa-solid fa-arrow-rotate-left"></i></span>
                         <span>Refresh</span>
@@ -119,8 +124,11 @@
                     </div>
                 </div>
 
+                <!-- FEATURE 5: The selected coin detail card is rendered here. -->
+                <section class="coin-detail-view" id="coin-detail-view" aria-live="polite" hidden></section>
+
                 <!-- Coin rows are generated dynamically by app.js. -->
-                <div class="table-wrap">
+                <div class="table-wrap" id="market-table-wrap">
                     <div class="market-table market-table-head">
                         <span class="col-asset">Asset</span>
                         <span class="col-price align-right">Price</span>
@@ -138,3 +146,5 @@
     <script src="app.js"></script>
 </body>
 </html>
+
+

@@ -865,5 +865,433 @@ p {
 .market-tools[hidden] {
     display: none;
 }
+/* FEATURE 5: Coin detail card and clickable asset names. */
+.asset-detail-button {
+    display: grid;
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 3px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
 
+.asset-detail-button:hover .asset-name {
+    color: var(--orange-dark);
+}
+
+.asset-detail-button:focus-visible,
+.detail-back-button:focus-visible {
+    outline: 2px solid #efbd7b;
+    outline-offset: 3px;
+}
+
+.coin-detail-view {
+    padding: 25px;
+    border: 1px solid #f0ece5;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #fffdfa, #fff);
+}
+
+.coin-detail-view[hidden] {
+    display: none;
+}
+
+.detail-back-button {
+    padding: 8px 11px;
+    border: 1px solid #f0ece5;
+    border-radius: 9px;
+    background: #fff;
+    color: #706e67;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.detail-hero {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 25px 0 24px;
+}
+
+.detail-coin-image {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+}
+
+.detail-identity {
+    min-width: 0;
+}
+
+.detail-identity h3 {
+    margin: 0;
+    font: 800 24px 'Manrope', sans-serif;
+    letter-spacing: -.6px;
+}
+
+.detail-identity p {
+    margin: 4px 0 0;
+    color: #929088;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.detail-rank {
+    margin-left: auto;
+    padding: 8px 11px;
+    border-radius: 20px;
+    background: #fff3e0;
+    color: #a95d05;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.detail-about {
+    padding: 18px 0 20px;
+    border-top: 1px solid #f0eee9;
+}
+
+.detail-about h4,
+.detail-stats-title {
+    margin: 0 0 8px;
+    font: 700 13px 'Manrope', sans-serif;
+}
+
+.detail-about p {
+    max-width: 780px;
+    margin: 0;
+    color: #77756e;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.detail-stats-title {
+    margin: 4px 0 12px;
+}
+
+.detail-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.detail-stat {
+    display: grid;
+    min-width: 0;
+    gap: 9px;
+    padding: 14px;
+    border: 1px solid #f0eee9;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.detail-stat-label {
+    color: #929088;
+    font-size: 10px;
+}
+
+.detail-stat-value {
+    overflow-wrap: anywhere;
+    color: #373630;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 680px) {
+    .coin-detail-view {
+        padding: 17px;
+    }
+
+    .detail-hero {
+        flex-wrap: wrap;
+    }
+
+    .detail-rank {
+        margin-left: 0;
+    }
+
+    .detail-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+/* OPTIONAL STRETCH: Theme toggle and dark color palette. */
+.theme-toggle {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 13px;
+    border: 1px solid #eee5d8;
+    border-radius: 11px;
+    background: #fff;
+    color: #625f57;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .18s, border-color .18s, color .18s;
+}
+
+.theme-toggle:hover {
+    border-color: #f3d8b5;
+    background: #fff7eb;
+}
+
+.theme-toggle-icon {
+    color: var(--orange-dark);
+    font-size: 15px;
+}
+
+.header-actions {
+    flex-wrap: wrap;
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --ink: #f2f0eb;
+    --muted: #a6aab2;
+    --line: #343840;
+    --green: #62d39c;
+    --green-pale: #17392c;
+    --red: #ff8c83;
+    --red-pale: #402522;
+}
+
+html[data-theme="dark"] body {
+    background: #111317;
+    color: var(--ink);
+}
+
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .market-section {
+    border-color: #2c3037;
+    background: #191c21;
+}
+
+html[data-theme="dark"] .sidebar {
+    border-right-color: #2c3037;
+}
+
+html[data-theme="dark"] .brand-mark {
+    background: #382817;
+    color: #ffb64b;
+}
+
+html[data-theme="dark"] .nav-heading,
+html[data-theme="dark"] .profile-copy small,
+html[data-theme="dark"] .profile-menu,
+html[data-theme="dark"] .page-subtitle,
+html[data-theme="dark"] .section-caption,
+html[data-theme="dark"] .last-updated,
+html[data-theme="dark"] .asset-rank,
+html[data-theme="dark"] .asset-symbol,
+html[data-theme="dark"] .detail-stat-label,
+html[data-theme="dark"] .detail-identity p {
+    color: #a0a5ae;
+}
+
+html[data-theme="dark"] .nav-link {
+    color: #c0c3ca;
+}
+
+html[data-theme="dark"] .nav-link:hover {
+    background: #252931;
+    color: #ffba5b;
+}
+
+html[data-theme="dark"] .nav-link-active,
+html[data-theme="dark"] .nav-link-active:hover {
+    background: #382817;
+    color: #ffc36c;
+}
+
+html[data-theme="dark"] .nav-count {
+    background: #382817;
+    color: #ffc36c;
+}
+
+html[data-theme="dark"] .promo-card {
+    border-color: #493723;
+    background: #272118;
+}
+
+html[data-theme="dark"] .promo-card p {
+    color: #b5afa3;
+}
+
+html[data-theme="dark"] .promo-icon {
+    background: #352a1d;
+    color: #ffb64b;
+}
+
+html[data-theme="dark"] .profile-avatar {
+    background: #49321d;
+    color: #ffd49d;
+}
+
+html[data-theme="dark"] .eyebrow,
+html[data-theme="dark"] .promo-card a {
+    color: #ffb64b;
+}
+
+html[data-theme="dark"] .live-indicator {
+    color: #c0c3ca;
+}
+
+html[data-theme="dark"] .live-dot {
+    box-shadow: 0 0 0 4px #183528;
+}
+
+html[data-theme="dark"] .refresh-button {
+    border-color: #f7931a;
+    background: #f7931a;
+    color: #21170c;
+}
+
+html[data-theme="dark"] .refresh-button:hover:not(:disabled) {
+    background: #ffad3d;
+}
+
+html[data-theme="dark"] .theme-toggle {
+    border-color: #383d46;
+    background: #20242a;
+    color: #e3e0d9;
+}
+
+html[data-theme="dark"] .theme-toggle:hover {
+    border-color: #70502e;
+    background: #2b261f;
+}
+
+html[data-theme="dark"] .market-section {
+    box-shadow: 0 8px 30px #00000020;
+}
+
+html[data-theme="dark"] .currency-label,
+html[data-theme="dark"] .search-box,
+html[data-theme="dark"] .sort-control,
+html[data-theme="dark"] .sort-direction,
+html[data-theme="dark"] .detail-back-button {
+    border-color: #383d46;
+    background: #20242a;
+    color: #d5d6da;
+}
+
+html[data-theme="dark"] .search-box:focus-within {
+    border-color: #b67a32;
+    box-shadow: 0 0 0 3px #49331c;
+}
+
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .sort-control select {
+    color: #f2f0eb;
+}
+
+html[data-theme="dark"] .search-input::placeholder,
+html[data-theme="dark"] .search-icon,
+html[data-theme="dark"] .currency-label span {
+    color: #9298a2;
+}
+
+html[data-theme="dark"] .sort-control select option {
+    background: #20242a;
+    color: #f2f0eb;
+}
+
+html[data-theme="dark"] .clear-search {
+    background: #343840;
+    color: #d5d6da;
+}
+
+html[data-theme="dark"] .sort-direction:hover,
+html[data-theme="dark"] .detail-back-button:hover {
+    border-color: #70502e;
+    background: #2b261f;
+}
+
+html[data-theme="dark"] .market-table-head {
+    border-bottom-color: #343840;
+    color: #a0a5ae;
+}
+
+html[data-theme="dark"] .market-row {
+    border-bottom-color: #2b2f36;
+}
+
+html[data-theme="dark"] .market-row:not(.skeleton-row):hover {
+    background: #20242a;
+}
+
+html[data-theme="dark"] .numeric-cell {
+    color: #e5e4df;
+}
+
+html[data-theme="dark"] .watchlist-toggle {
+    color: #9ba0aa;
+}
+
+html[data-theme="dark"] .watchlist-toggle:hover,
+html[data-theme="dark"] .watchlist-toggle.is-saved {
+    border-color: #624621;
+    background: #352a1d;
+    color: #ffba4d;
+}
+
+html[data-theme="dark"] .skeleton-row i,
+html[data-theme="dark"] .skeleton-row b {
+    background: linear-gradient(90deg, #292d34, #343943, #292d34);
+    background-size: 200% 100%;
+}
+
+html[data-theme="dark"] .state-panel p {
+    color: #b3b6bd;
+}
+
+html[data-theme="dark"] .state-error h3 {
+    color: #ff9a91;
+}
+
+html[data-theme="dark"] .retry-button {
+    background: #382817;
+    color: #ffc36c;
+}
+
+html[data-theme="dark"] .coin-detail-view {
+    border-color: #343840;
+    background: linear-gradient(145deg, #1d2026, #191c21);
+}
+
+html[data-theme="dark"] .detail-about {
+    border-top-color: #343840;
+}
+
+html[data-theme="dark"] .detail-about p {
+    color: #c0c3ca;
+}
+
+html[data-theme="dark"] .detail-stat {
+    border-color: #343840;
+    background: #20242a;
+}
+
+html[data-theme="dark"] .detail-stat-value {
+    color: #f0eee8;
+}
+
+html[data-theme="dark"] .detail-rank {
+    background: #382817;
+    color: #ffc36c;
+}
+
+html[data-theme="dark"] .detail-back-button {
+    color: #e3e0d9;
+}
 
