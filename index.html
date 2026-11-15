@@ -1,114 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#fffaf3">
-  <title>Bitora — Crypto Market Tracker</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="app.js" defer></script>
-</head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar" aria-label="Main navigation">
-      <a class="brand" href="#home" aria-label="Bitora home">
-        <span class="brand-mark" aria-hidden="true">₿</span>
-        <span class="brand-name">Bitora</span>
-      </a>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fffaf3">
+    <title>Bitora — Crypto Market Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css" integrity="sha512-x9WwyMYBnlXMNQ6kQ/Lyzu1NqIhLQKL5Oq6xByfXuRj7s9CskyCbLv/1IjqzJmXwFXWr0ov6jBV7Qbc0hh9nHg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    </head>
 
-      <div class="nav-section">
-        <p class="nav-heading">PANEL</p>
-        <nav class="nav-list">
-          <a class="nav-link nav-link-active" href="#home" aria-current="page">
-            <span class="nav-icon" aria-hidden="true">◫</span><span>Overview</span>
-          </a>
-          <a class="nav-link" href="#markets" aria-disabled="true" title="Coming in a later feature">
-            <span class="nav-icon" aria-hidden="true">⌁</span><span>Markets</span>
-          </a>
-          <a class="nav-link nav-link-between" href="#watchlist" aria-disabled="true" title="Coming in a later feature">
-            <span class="nav-label"><span class="nav-icon" aria-hidden="true">☆</span><span>Watchlist</span></span>
-            <span class="nav-count">0</span>aa                                                                      
-          </a>
-        </nav>
-      </div>
+    <body>
+        <div class="app-shell">
+            <aside class="sidebar" aria-label="Main navigation">
+                <a class="brand" href="#home" aria-label="Bitora home">
+                    <span class="brand-mark" aria-hidden="true"><i class="fa-brands fa-btc"></i></span>
+                    <span class="brand-name">Bitora</span>
+                </a>
 
-      <div class="nav-section explore-section">
-        <p class="nav-heading">EXPLORE</p>
-        <nav class="nav-list">
-          <a class="nav-link" href="#assets" aria-disabled="true" title="Coming in a later feature">
-            <span class="nav-icon" aria-hidden="true">◎</span><span>All assets</span>
-          </a>
-        </nav>
-      </div>
+                <div class="nav-section">
+                    <p class="nav-heading">PANEL</p>
+                    <nav class="nav-list">
+                        <a class="nav-link nav-link-active" href="#home" aria-current="page">
+                            <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-house"></i></span><span>Overview</span>
+                        </a>
+                        <a class="nav-link" href="#markets" aria-disabled="true" title="Coming in a later feature">
+                            <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></span><span>Markets</span>
+                        </a>
+                        <a class="nav-link nav-link-between" href="#watchlist" aria-disabled="true"
+                            title="Coming in a later feature">
+                            <span class="nav-label"><span class="nav-icon"
+                                    aria-hidden="true"><i class="fa-regular fa-star"></i></span><span>Watchlist</span></span>
+                            <span class="nav-count">0</span>
+                        </a>
+                    </nav>
+                </div>
 
-      <div class="sidebar-spacer"></div>
+                <div class="nav-section explore-section">
+                    <p class="nav-heading">EXPLORE</p>
+                    <nav class="nav-list">
+                        <a class="nav-link" href="#assets" aria-disabled="true" title="Coming in a later feature">
+                            <span class="nav-icon" aria-hidden="true">◎</span><span>All assets</span>
+                        </a>
+                    </nav>
+                </div>
 
-      <section class="promo-card" aria-label="Crypto learning resource">
-        <span class="promo-icon" aria-hidden="true">₿</span>
-        <h2>New to crypto?</h2>
-        <p>Explore the market at your own pace.</p>
-        <a href="https://bitcoin.org/en/" target="_blank" rel="noreferrer">Learn the basics <span aria-hidden="true">↗</span></a>
-      </section>
+                <div class="sidebar-spacer"></div>
 
-      <div class="profile-row">
-        <span class="profile-avatar" aria-hidden="true">V</span>
-        <span class="profile-copy"><strong>Vishnu Keer</strong><small>Personal account</small></span>
-        <span class="profile-menu" aria-hidden="true">···</span>
-      </div>
-    </aside>
+                <section class="promo-card" aria-label="Crypto learning resource">
+                    <span class="promo-icon" aria-hidden="true"><i class="fa-brands fa-btc"></i></span>
+                    <h2>New to crypto?</h2>
+                    <p>Explore the market at your own pace.</p>
+                    <a href="https://bitcoin.org/en/" target="_blank" rel="noreferrer">Learn the basics <span
+                            aria-hidden="true">↗</span></a>
+                </section>
 
-    <main class="main-content" id="home">
-      <header class="page-header">
-        <div>
-          <p class="eyebrow">MARKET OVERVIEW</p>
-          <h1>Good to see you, Vishnu <span aria-hidden="true">✦</span></h1>
-          <p class="page-subtitle">A clear view of the crypto market, all in one place.</p>
+                <div class="profile-row">
+                    <span class="profile-avatar" aria-hidden="true">V</span>
+                    <span class="profile-copy"><strong>Vishnu Keer</strong><small>Personal account</small></span>
+                    <span class="profile-menu" aria-hidden="true">···</span>
+                </div>
+            </aside>
+
+            <main class="main-content" id="home">
+                <header class="page-header">
+                    <div>
+                        <p class="eyebrow">MARKET OVERVIEW</p>
+                        <h1>Good to see you, Vishnu !</h1>
+                        <p class="page-subtitle">A clear view of the crypto market, all in one place.</p>
+                    </div>
+                    <div class="header-actions">
+                        <span class="live-indicator"><span class="live-dot"></span> Live market data</span>
+                        <button class="refresh-button" id="refresh-button" type="button">
+                            <span class="refresh-icon" aria-hidden="true"><i class="fa-solid fa-arrow-rotate-left"></i></span><span>Refresh</span>
+                        </button>
+                    </div>
+                </header>
+
+                <section class="market-section" aria-labelledby="market-title">
+                    <div class="section-heading">
+                        <div>
+                            <h2 id="market-title">Top cryptocurrencies</h2>
+                            <p class="section-caption" id="section-caption">The 20 largest coins by market
+                                capitalization</p>
+                        </div>
+                        <div class="market-tools">
+                            <label class="search-box" for="coin-search">
+                                <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                <input class="search-input" id="coin-search" type="search"
+                                    placeholder="Search coin name or symbol"
+                                    aria-label="Search coins by name or symbol">
+                                <button class="clear-search" id="clear-search" type="button" aria-label="Clear search"
+                                    hidden><i class="fa-solid fa-square-xmark"></i></button>
+                            </label>
+                            <label class="sort-control" for="sort-by">
+                                <span>Sort by</span>
+                                <select id="sort-by" aria-label="Sort coins by">
+                                    <option value="market_cap" selected>Market cap</option>
+                                    <option value="current_price">Price</option>
+                                    <option value="price_change_percentage_24h">24h change</option>
+                                </select>
+                            </label>
+                            <button class="sort-direction" id="sort-direction" type="button" aria-label="Current sort order: high to low">
+                                <span class="sort-direction-icon" id="sort-direction-icon" aria-hidden="true"><i class="fa-solid fa-arrow-down"></i></span>
+                                <span class="sort-direction-label" id="sort-direction-label">High to low</span>
+                            </button>
+                            <span class="currency-label">USD <span><i class="fa-solid fa-angle-down"></i></span></span>
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <div class="market-table market-table-head">
+                            <span class="col-asset">Asset</span>
+                            <span class="col-price align-right">Price</span>
+                            <span class="col-change align-right">24h change</span>
+                            <span class="col-cap align-right">Market cap</span>
+                        </div>
+                        <div class="market-results" id="market-results" aria-live="polite" aria-busy="true"></div>
+                    </div>
+                    <p class="last-updated" id="last-updated">Connecting to CoinGecko…</p>
+                </section>
+            </main>
         </div>
-        <div class="header-actions">
-          <span class="live-indicator"><span class="live-dot"></span> Live market data</span>
-          <button class="refresh-button" id="refresh-button" type="button">
-            <span class="refresh-icon" aria-hidden="true">↻</span><span>Refresh</span>
-          </button>
-        </div>
-      </header>
 
-      <section class="market-section" aria-labelledby="market-title">
-        <div class="section-heading">
-          <div>
-            <h2 id="market-title">Top cryptocurrencies</h2>
-            <p class="section-caption" id="section-caption">The 20 largest coins by market capitalization</p>
-          </div>
-          <div class="market-tools">
-            <label class="search-box" for="coin-search">
-              <span class="search-icon" aria-hidden="true">⌕</span>
-              <input class="search-input" id="coin-search" type="search" placeholder="Search coin name or symbol" autocomplete="off" spellcheck="false" aria-label="Search coins by name or symbol">
-              <button class="clear-search" id="clear-search" type="button" aria-label="Clear search" hidden>×</button>
-            </label>
-            <span class="currency-label">USD <span aria-hidden="true">⌄</span></span>
-          </div>
-        </div>
+        <script src="app.js"></script>
+    </body>
 
-        <div class="table-wrap">
-          <div class="market-table market-table-head" aria-hidden="true">
-            <span class="col-asset">Asset</span>
-            <span class="col-price align-right">Price</span>
-            <span class="col-change align-right">24h change</span>
-            <span class="col-cap align-right">Market cap</span>
-          </div>
-          <div class="market-results" id="market-results" aria-live="polite" aria-busy="true"></div>
-        </div>
-        <p class="last-updated" id="last-updated">Connecting to CoinGecko…</p>
-      </section>
-    </main>
-  </div>
-</body>
 </html>
-
-
-
-
-
 
