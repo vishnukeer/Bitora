@@ -103,13 +103,14 @@ function renderCoins(coins, limit = DISPLAY_LIMIT) {
         asset.className = 'asset-cell col-asset';
         const rank = document.createElement('span');
         rank.className = 'asset-rank';
-        rank.textContent = String(coin.market_cap_rank ?? index + 1).padStart(2, '0');
+        rank.textContent = String(coin.market_cap_rank ?? index + 1)
+        //create coin image
         const image = document.createElement('img');
         image.className = 'coin-image';
         image.src = coin.image || '';
         image.alt = '';
         image.loading = 'lazy';
-        image.addEventListener('error', () => { image.hidden = true; }, { once: true });
+        // coin btn
         const nameWrap = document.createElement('button');
         nameWrap.className = 'asset-name-wrap asset-detail-button';
         nameWrap.type = 'button';
@@ -119,10 +120,10 @@ function renderCoins(coins, limit = DISPLAY_LIMIT) {
         const symbol = document.createElement('span');
         symbol.className = 'asset-symbol';
         symbol.textContent = coin.symbol ? coin.symbol.toUpperCase() : '';
-        nameWrap.dataset.coinDetail = '';
         nameWrap.dataset.coinId = coin.id;
         nameWrap.setAttribute('aria-label', `View ${coin.name} details`);
         nameWrap.append(name, symbol);
+        // Build the watchlist star
         const isSaved = watchlistCoins.some((savedCoin) => savedCoin.id === coin.id);
         const watchlistButton = document.createElement('button');
         watchlistButton.className = `watchlist-toggle${isSaved ? ' is-saved' : ''}`;
@@ -135,22 +136,24 @@ function renderCoins(coins, limit = DISPLAY_LIMIT) {
         starIcon.className = `${isSaved ? 'fa-solid' : 'fa-regular'} fa-star`;
         starIcon.setAttribute('aria-hidden', 'true');
         watchlistButton.append(starIcon);
+    
         asset.append(rank, image, nameWrap, watchlistButton);
 
+        //Create the price cell
         const price = document.createElement('span');
         price.className = 'col-price align-right numeric-cell';
         price.textContent = formatPrice(coin.current_price);
         const changeCell = document.createElement('span');
         changeCell.className = `col-change align-right change-cell ${changeClass}`;
         changeCell.textContent = formatChange(change);
+        // Create the market-cap
         const cap = document.createElement('span');
         cap.className = 'col-cap align-right numeric-cell';
         cap.textContent = formatMarketCap(coin.market_cap);
-        row.append(asset, price, changeCell, cap);
+        row.append(asset, price, changeCell, cap); //Adds the asset, price, change, and market cap to the row.
         fragment.append(row);
     });
     resultsContainer.replaceChildren(fragment);
-    resultsContainer.setAttribute('aria-busy', 'false');
 }
 
 // FEATURE 2: Search — filter the fetched CoinGecko coins by name or symbol.
@@ -187,19 +190,8 @@ function saveWatchlist() {
         console.error('Unable to save the Bitora watchlist:', error);
         updatedLabel.textContent = 'Could not save the watchlist in this browser';
     }
-    applyTheme(getSavedTheme());
-themeToggle.addEventListener('click', () => {
-    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    applyTheme(nextTheme);
-    try {
-        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-    } catch (error) {
-        console.error('Unable to save the Bitora theme preference:', error);
-    }
-});
-updateWatchlistCount();
+    updateWatchlistCount();
 }
-
 function updateWatchlistCount() {
     watchlistCount.textContent = String(watchlistCoins.length);
 }
@@ -438,6 +430,7 @@ function showErrorState() {
 }
 
 // Initial data load and user-triggered refresh, with error handling.
+// Initial data load and user-triggered refresh, with error handling.
 async function loadMarketData() {
     refreshButton.disabled = true;
     refreshButton.classList.add('is-refreshing');
@@ -446,8 +439,9 @@ async function loadMarketData() {
     updatedLabel.textContent = 'Updating market data…';
 
     try {
-        const response = await fetch(MARKET_API_URL, { headers: { accept: 'application/json' } });
-        if (!response.ok) throw new Error(`Market request failed with status ${response.status}`);
+        const response = await fetch(MARKET_API_URL);
+        if (!response.ok) throw new Error('The market request failed.');
+
         const coins = await response.json();
         if (!Array.isArray(coins) || coins.length === 0) {
             if (currentView === 'watchlist') renderWatchlist();
@@ -455,23 +449,19 @@ async function loadMarketData() {
             updatedLabel.textContent = 'No market data returned';
             return;
         }
+
         marketCoins = coins;
         syncSavedCoinData(coins);
-        applyTheme(getSavedTheme());
-themeToggle.addEventListener('click', () => {
-    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    applyTheme(nextTheme);
-    try {
-        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-    } catch (error) {
-        console.error('Unable to save the Bitora theme preference:', error);
-    }
-});
-updateWatchlistCount();
+        updateWatchlistCount();
         renderCurrentView();
-        updatedLabel.textContent = `Updated ${new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(new Date())} · Showing the top ${Math.min(coins.length, DISPLAY_LIMIT)} coins`;
+
+        const time = new Date().toLocaleTimeString([], {
+            hour: 'numeric',
+            minute: '2-digit'
+        });
+        updatedLabel.textContent = `Updated ${time} · Showing the top ${Math.min(coins.length, DISPLAY_LIMIT)} coins`;
     } catch (error) {
-        console.error('Unable to load CoinGecko market data:', error);
+        console.error(error);
         if (currentView === 'watchlist') renderWatchlist();
         else showErrorState();
         updatedLabel.textContent = 'Market data unavailable';
@@ -480,7 +470,6 @@ updateWatchlistCount();
         refreshButton.classList.remove('is-refreshing');
     }
 }
-
 // Page controls and delegated coin-row actions.
 // FEATURE 4: Event delegation handles stars on dynamically rendered coin rows.
 resultsContainer.addEventListener('click', (event) => {
@@ -555,6 +544,7 @@ themeToggle.addEventListener('click', () => {
 updateWatchlistCount();
 refreshButton.addEventListener('click', loadMarketData);
 loadMarketData();
+
 
 
 
