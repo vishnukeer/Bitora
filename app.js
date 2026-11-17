@@ -233,9 +233,9 @@ function applySearchAndSort() {
     }
 
     if (sortSelect.value === 'market_cap' && sortDescending) {
-        sectionCaption.textContent = 'The 20 largest coins by market capitalization';
+        sectionCaption.textContent = `The ${DISPLAY_LIMIT} largest coins by market capitalization`;
     } else {
-        sectionCaption.textContent = `Top 20 coins · sorted by ${sortNames[sortSelect.value]} (${direction})`;
+        sectionCaption.textContent = `Top ${DISPLAY_LIMIT} coins · sorted by ${sortNames[sortSelect.value]} (${direction})`;
     }
 
     renderCoins(sortedCoins);
@@ -411,7 +411,7 @@ function renderCoinDetail(coin) {
         ['24h change', formatChange(coin.price_change_percentage_24h), changeClass],
         ['Market cap', formatMarketCap(coin.market_cap), ''],
         ['24h volume', formatMarketCap(coin.total_volume), ''],
-        ['Circulating supply', formatSupply(coin.circulating_supply, coin.symbol), ''],
+        // ['Circulating supply', formatSupply(coin.circulating_supply, coin.symbol), ''],
         ['24h high / low', `${formatPrice(coin.high_24h)} / ${formatPrice(coin.low_24h)}`, '']
     ];
 
@@ -452,7 +452,7 @@ async function loadMarketData() {
     refreshButton.disabled = true;
     refreshButton.classList.add('is-refreshing');
     updatedLabel.textContent = 'Updating market data…';
-    resultsContainer.setAttribute('aria-busy', 'true');
+    // resultsContainer.setAttribute('aria-busy', 'true');
     showLoadingRows();
 
     try {
@@ -594,9 +594,9 @@ function clearSearch() {
 
 // Read saved preferences, connect buttons, and load the market once on page start.
 function startApp() {
-    watchlistCoins = loadWatchlist();
-    updateWatchlistCount();
-    applyTheme(loadTheme());
+    watchlistCoins = loadWatchlist();    
+    updateWatchlistCount();                        
+    applyTheme(loadTheme());        
 
     searchInput.addEventListener('input', handleSearchInput);
     clearSearchButton.addEventListener('click', clearSearch);
