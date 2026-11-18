@@ -140,12 +140,12 @@ function renderCoins(coins, limit = DISPLAY_LIMIT) {
         starButton.type = 'button';
         starButton.dataset.watchlistToggle = '';
         starButton.dataset.coinId = coin.id;
-        // starButton.setAttribute('aria-pressed', String(isSaved));
+        
         starButton.setAttribute('aria-label', `${isSaved ? 'Remove' : 'Add'} ${coin.name} ${isSaved ? 'from' : 'to'} watchlist`);
 
         const starIcon = document.createElement('i');    //decorate star icon when clicked
         starIcon.className = isSaved ? 'fa-solid fa-star' : 'fa-regular fa-star';
-        // starIcon.setAttribute('aria-hidden', 'true');
+       
         starButton.append(starIcon);
 
         asset.append(rank, image, nameButton, starButton);
@@ -260,7 +260,7 @@ function loadWatchlist() {
 
 function saveWatchlist() {
     try {
-        localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(watchlistCoins));
+        localStorage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(watchlistCoins)); //convert the array into text
         updatedLabel.textContent = 'Watchlist saved on this device';
     } catch (error) {
         console.error('Could not save the watchlist:', error);
